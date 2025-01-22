@@ -8,6 +8,7 @@ import ssl
 
 FORMATTER = formatters.compose(formatters.RawDescription, formatters.RawArguments)
 SSL_CONTEXT = ssl._create_unverified_context()
+PORT_LOOKUP = {}
 
 
 def scan_target(host, headers, ip, ports):
@@ -27,9 +28,9 @@ def scan_target(host, headers, ip, ports):
     for port in ports:
         conn = http.client.HTTPSConnection(host, 443, timeout=5, context=SSL_CONTEXT)
         try:
-            conn.request("GET", f"/http-{port}/{ip}", headers=headers)
+            conn.request("GET", f"/http-{port[0]}/{ip}", headers=headers)
             _ = conn.getresponse()
-            print(f"{ip}:{port}")
+            print(f"{ip}:{port[0]} ({port[1]}) [{port[2]}]")
         except TimeoutError as _:
             # not open or responding
             pass
@@ -38,7 +39,7 @@ def scan_target(host, headers, ip, ports):
             pass
         except http.client.BadStatusLine as _:
             # some kind of non-HTTP response was received
-            print(f"{ip}:{port}")
+            print(f"{ip}:{port[0]} ({port[1]}) [{port[2]}]")
         finally:
             conn.close()
 
@@ -72,8 +73,21 @@ def clientless_vpn_port_scan(host, cookie, target, top_ports=10, port=None):
         Scan a range of IPs with specified ports:
             clientless-vpn-port-scan.py --port 80,443,8080 vpn.example.com session_cookie 192.168.0.0/24
     """
+    for svc in TOP_1000_PORTS:
+        PORT_LOOKUP[svc[0]] = [svc[1], svc[2]]
     if port:
-        ports = [int(p) for p in port.split(",")]
+        ports = []
+        for port in port.split(","):
+            port = int(port)
+            try:
+                service = PORT_LOOKUP[port][0]
+            except KeyError as _:
+                service = ""
+            try:
+                description = PORT_LOOKUP[port][1]
+            except KeyError as _:
+                description = ""
+            ports.append((port, service, description))
     else:
         ports = TOP_1000_PORTS[: int(top_ports)]
 
