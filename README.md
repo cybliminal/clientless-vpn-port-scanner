@@ -80,10 +80,10 @@ open.
 
 ## To Do
 
-- Investigate using something other than http.client that may allow sending
-  non-HTTP protocol data.
-- Perform timing analysis to see if we use timing as a means to detect if a
-  non-HTTP port is open or closed.
+- Investigate using something other than python's standard library `http.client`
+  that may allow sending non-HTTP protocol data.
+- Perform timing analysis to see if we can use timing differences as a means to
+  detect if a non-HTTP port is open or closed.
 
 ## ports.py
 
