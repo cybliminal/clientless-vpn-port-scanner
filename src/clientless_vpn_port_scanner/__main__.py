@@ -1,14 +1,20 @@
-from begin import formatters, start
-from ports import TOP_1000_PORTS
-
+from . import __author__, __version__
+from .ports import TOP_1000_PORTS
 from ipaddress import IPv4Network
 import http.client
 import ssl
 
+import cyclopts
 
-FORMATTER = formatters.compose(formatters.RawDescription, formatters.RawArguments)
 SSL_CONTEXT = ssl._create_unverified_context()
 PORT_LOOKUP = {}
+
+
+def get_version() -> str:
+    return f"{__version__} (maintained by {__author__})"
+
+
+app = cyclopts.App(name="clientless_vpn_port_scanner", version=get_version(), help_on_error=True)
 
 
 def scan_target(host, headers, ip, ports):
@@ -44,8 +50,8 @@ def scan_target(host, headers, ip, ports):
             conn.close()
 
 
-@start(formatter_class=FORMATTER)  # pyright: ignore [reportCallIssue]
-def clientless_vpn_port_scan(host, cookie, target, top_ports=10, port=None):
+@app.default
+def clientless_vpn_port_scanner(host, cookie, target, top_ports=10, port=None):
     """
     Conducts a TCP port scan via a Palo Alto Networks Global Protect clientless
     VPN gateway against a given target.
@@ -101,3 +107,7 @@ def clientless_vpn_port_scan(host, cookie, target, top_ports=10, port=None):
     headers = dict(Cookie=f"GP_SESSION_CK={cookie}")
     for ip in targets:
         scan_target(host, headers, ip, ports)
+
+
+if __name__ == "__main__":
+    app()

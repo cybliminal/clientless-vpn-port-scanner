@@ -1,0 +1,63 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "clientless-vpn-port-scanner"
+version = "1.1.0"
+description = "GlobalProtect Clientless VPN Port Scanner"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "Matthew Flanagan" }]
+keywords = [
+    "palo-alto",
+    "firewall",
+    "vpn",
+    "port-scanner",
+    "pentesting",
+    "red-team",
+    "offense",
+    "cybersecurity",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: System Administrators",
+    "Intended Audience :: Information Technology",
+    "License :: OSI Approved :: MIT License",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: System :: Systems Administration",
+]
+dependencies = ["cyclopts>=1.0"]
+
+[project.optional-dependencies]
+dev = ["pytest>=7.0", "pytest-cov>=1.0", "ruff>=0.14", "pyright>=1.1"]
+
+[project.scripts]
+clientless-vpn-port-scanner = "clientless_vpn_port_scanner.__main__:app"
+
+[project.urls]
+Homepage = "https://github.com/cybliminal/clientless-vpn-port-scanner"
+Documentation = "https://github.com/cybliminal/clientless-vpn-port-scanner/blob/main/README.md"
+Repository = "https://github.com/cybliminal/clientless-vpn-port-scanner.git"
+Issues = "https://github.com/cybliminal/clientless-vpn-port-scanner/issues"
+
+
+[tool.pytest.ini_options]
+python_files = ["test_*.py"]
+norecursedirs = [
+    ".git",
+    ".venv",
+    "venv",
+    "env",
+    "build",
+    "dist",
+    "site-packages",
+]
